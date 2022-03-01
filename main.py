@@ -24,23 +24,23 @@ def get_all_students():
 
 @app.post('/students', response_model=Student, status_code=status.HTTP_201_CREATED)
 def create_an_student(student: Student):
-    db_student = db.query(models.Student).filter(models.Student.F_Name ==
-    student.F_Name).first()
+    db_student = db.query(models.Student).filter(models.Student.ID == student.ID).first()
     if db_student is not None:
        raise HTTPException(status_code=400, detail="Item already exists")
     new_student = models.Student(
        F_Name=student.F_Name,
        L_Name=student.L_Name,
+       ID=student.ID,
        GPA=student.GPA)
     db.add(new_student)
     db.commit()
     return new_student
 
-@app.get('/student',response_model=Student, status_code=status.HTTP_201_CREATED)
+@app.get('/student/{student_id}',response_model=Student, status_code=status.HTTP_201_CREATED)
 def get_an_student(student_id:int):
     student = db.query(models.Student).filter(models.Student.ID==student_id).first()
     if student is None:
-        raise HTTPException(status_code=400, detail="Item already exists")
+        raise HTTPException(status_code=400, detail="Item not exists")
 
     return student
 
